@@ -30,6 +30,9 @@
 #include <memory>
 #include <mutex>
 #include "logging.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include "triton/backend/backend_common.h"
 
 namespace triton { namespace backend { namespace tensorrt {
@@ -65,8 +68,29 @@ LoadPlan(
   }
 
   std::string model_data_str;
-  RETURN_IF_ERROR(ReadTextFile(plan_path, &model_data_str));
-  std::vector<char> model_data(model_data_str.begin(), model_data_str.end());
+  // decrypt tensorrt 
+  std::filebuf in;
+  if (!in.open(plan_path, std::ios::in)) {
+      std::cout << "fail to open file" << std::endl;
+      return 1;
+  }
+
+  std::string key = "1923456789765021";//"A34B123RTAa1qwe3";
+  std::vector<char> model_data;
+  int x = key.size();
+  int i = 0;
+  char ch;
+  do {
+      ch = in.sgetc();
+      ch = ch^key[i>=x?i=0:i++];
+      std::cout << (int)ch<<std::endl;
+  model_data.push_back(ch);
+      // outbuf.sputc(ch);
+  } while ( in.snextc() != EOF );
+
+  
+  // RETURN_IF_ERROR(ReadTextFile(plan_path, &model_data_str));
+  // std::vector<char> model_data(model_data_str.begin(), model_data_str.end());
 
   engine->reset(
       (*runtime)->deserializeCudaEngine(&model_data[0], model_data.size()));
