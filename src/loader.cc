@@ -71,7 +71,7 @@ LoadPlan(
   std::filebuf in;
   if (!in.open(plan_path, std::ios::in)) {
       std::cout << "fail to open file" << std::endl;
-      return TRITONSERVER_ErrorNew(TRITONSERVER_ERROR_INTERNAL, "unable to encrypted model plan");
+      return TRITONSERVER_ErrorNew(TRITONSERVER_ERROR_INTERNAL, "unable to load encrypted model plan");
   }
 
   std::string key = "1923456789765021";//"A34B123RTAa1qwe3";
@@ -82,7 +82,6 @@ LoadPlan(
   do {
       ch = in.sgetc();
       ch = ch^key[i>=x?i=0:i++];
-      std::cout << (int)ch<<std::endl;
       model_data.push_back(ch);
       // outbuf.sputc(ch);
   } while ( in.snextc() != EOF );
