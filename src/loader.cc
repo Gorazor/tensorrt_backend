@@ -67,12 +67,11 @@ LoadPlan(
     }
   }
 
-  std::string model_data_str;
   // decrypt tensorrt 
   std::filebuf in;
   if (!in.open(plan_path, std::ios::in)) {
       std::cout << "fail to open file" << std::endl;
-      return 1;
+      return TRITONSERVER_ErrorNew(TRITONSERVER_ERROR_INTERNAL, "unable to encrypted model plan");
   }
 
   std::string key = "1923456789765021";//"A34B123RTAa1qwe3";
