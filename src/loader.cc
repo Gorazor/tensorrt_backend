@@ -83,7 +83,7 @@ LoadPlan(
       ch = in.sgetc();
       ch = ch^key[i>=x?i=0:i++];
       std::cout << (int)ch<<std::endl;
-  model_data.push_back(ch);
+      model_data.push_back(ch);
       // outbuf.sputc(ch);
   } while ( in.snextc() != EOF );
 
